@@ -5,6 +5,14 @@
         <Nullable>enable</Nullable>
         <WarningsAsErrors>nullable</WarningsAsErrors>
         <RootNamespace>NickStrupat</RootNamespace>
+        <Version>1.0.0-beta1</Version>
+        <Title>WarmObservable</Title>
+        <Authors>Nick Strupat</Authors>
+        <Description>A library for combining a cold observable and a hot observable of the same source. No missed items and no duplicate items.</Description>
+        <PackageProjectUrl>https://github.com/NickStrupat/WarmObservable</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/NickStrupat/WarmObservable/blob/2e958489f4bd3ee1bdc7bdc31e92551f03fca710/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/NickStrupat/WarmObservable</RepositoryUrl>
+        <PackageTags>rx reactive reactive-extensions</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
