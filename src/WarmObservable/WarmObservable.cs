@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ConcurrentCollections;
 
 namespace NickStrupat;
 
@@ -38,7 +39,7 @@ public static class WarmObservable
 	
 		private sealed class DistinctObserver(IObserver<T> o, IEqualityComparer<T> ec) : IObserver<T>
 		{
-			private HashSet<T>? set = new(ec);
+			private ConcurrentHashSet<T>? set = new(ec);
 
 			public async void OnColdCompleted(TimeSpan delay)
 			{
