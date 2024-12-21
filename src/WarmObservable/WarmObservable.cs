@@ -15,7 +15,11 @@ public static class WarmObservable
 		TimeSpan hotLatencyDelay = default
 	)
 	{
-		return new DistinctUntilColdObservableCompletesObservable<T>(cold, hot, ec, hotLatencyDelay);
+        ArgumentNullException.ThrowIfNull(cold);
+        ArgumentNullException.ThrowIfNull(hot);
+        ArgumentNullException.ThrowIfNull(ec);
+        ArgumentOutOfRangeException.ThrowIfNegative(hotLatencyDelay.Ticks);
+        return new DistinctUntilColdObservableCompletesObservable<T>(cold, hot, ec, hotLatencyDelay);
 	}
 	
 	private sealed class DistinctUntilColdObservableCompletesObservable<T>(
@@ -28,7 +32,6 @@ public static class WarmObservable
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
 			ArgumentNullException.ThrowIfNull(observer);
-			ArgumentOutOfRangeException.ThrowIfNegative(hotLatencyDelay.Ticks);
 			var o = new DistinctObserver(observer, ec);
 			return hot.Merge(cold.Finally(() => o.OnColdCompleted(hotLatencyDelay))).Subscribe(o);
 		}
@@ -39,6 +42,7 @@ public static class WarmObservable
 
 			public async void OnColdCompleted(TimeSpan delay)
 			{
+				ArgumentOutOfRangeException.ThrowIfNegative(delay.Ticks);
 				await Task.Delay(delay);
 				Interlocked.Exchange(ref set, null);
 			}
