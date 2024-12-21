@@ -34,14 +34,14 @@ public static class WarmObservable
 		{
 			ArgumentNullException.ThrowIfNull(observer);
 			var o = new DistinctObserver(observer, ec);
-			return hot.Merge(cold.Finally(() => o.OnColdCompleted(hotLatencyDelay))).Subscribe(o);
+			return hot.Merge(cold.Finally(() => _ = o.OnColdCompleted(hotLatencyDelay))).Subscribe(o);
 		}
 	
 		private sealed class DistinctObserver(IObserver<T> o, IEqualityComparer<T> ec) : IObserver<T>
 		{
 			private ConcurrentHashSet<T>? set = new(ec);
 
-			public async void OnColdCompleted(TimeSpan delay)
+			public async Task OnColdCompleted(TimeSpan delay)
 			{
 				ArgumentOutOfRangeException.ThrowIfNegative(delay.Ticks);
 				await Task.Delay(delay);
