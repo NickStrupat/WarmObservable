@@ -43,7 +43,6 @@ public static class WarmObservable
 
 			public async Task OnColdCompleted(TimeSpan delay)
 			{
-				ArgumentOutOfRangeException.ThrowIfNegative(delay.Ticks);
 				await Task.Delay(delay);
 				Interlocked.Exchange(ref set, null);
 			}
