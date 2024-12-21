@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <WarningsAsErrors>nullable</WarningsAsErrors>
         <RootNamespace>NickStrupat</RootNamespace>
-        <Version>1.0.0-beta1</Version>
+        <Version>1.0.0-beta3</Version>
         <Title>WarmObservable</Title>
         <Authors>Nick Strupat</Authors>
         <Description>A library for combining a cold observable and a hot observable of the same source. No missed items and no duplicate items.</Description>
@@ -13,9 +13,11 @@
         <PackageLicenseUrl>https://github.com/NickStrupat/WarmObservable/blob/2e958489f4bd3ee1bdc7bdc31e92551f03fca710/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/NickStrupat/WarmObservable</RepositoryUrl>
         <PackageTags>rx reactive reactive-extensions</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="/"/>
         <PackageReference Include="ConcurrentHashSet" Version="1.3.0" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
