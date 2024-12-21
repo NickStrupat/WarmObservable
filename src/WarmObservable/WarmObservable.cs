@@ -42,12 +42,6 @@ public static class WarmObservable
 		{
 			private ConcurrentHashSet<T>? set = new(ec);
 
-			public async Task OnColdCompleted(TimeSpan delay)
-			{
-				await Task.Delay(delay);
-				Interlocked.Exchange(ref set, null);
-			}
-
 			public void OnCompleted() => o.OnCompleted();
 			public void OnError(Exception error) => o.OnError(error);
 
@@ -55,6 +49,12 @@ public static class WarmObservable
 			{
 				if (set is null || Interlocked.CompareExchange(ref set, null, null) is not { } x || x.Add(value))
 					o.OnNext(value);
+			}
+
+			public async Task OnColdCompleted(TimeSpan delay)
+			{
+				await Task.Delay(delay);
+				Interlocked.Exchange(ref set, null);
 			}
 		}
 	}
