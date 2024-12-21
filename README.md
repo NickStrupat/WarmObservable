@@ -24,7 +24,7 @@ You can also provide a latency delay to account for the time it takes for the ho
 var cold = Observable.FromAsync(async () => await apiClient.GetThingsAsync()).SelectMany(x => x);
 
 var hot = new Subject<Thing>();
-await apiClient.SubscribeToNewThingsWithColorAsync(Color.Red, hot.OnNext);
+await apiClient.SubscribeToNewThingsAsync(hot.OnNext);
 
 var thingEqualityComparer = EqualityComparer<Thing>.Create(
     (a, b) => a!.Id == b!.Id,
