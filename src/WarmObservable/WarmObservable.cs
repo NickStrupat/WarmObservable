@@ -33,8 +33,9 @@ public static class WarmObservable
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
 			ArgumentNullException.ThrowIfNull(observer);
-			var o = new DistinctObserver(observer, ec);
-			return hot.Merge(cold.Finally(() => _ = o.OnColdCompleted(hotLatencyDelay))).Subscribe(o);
+			var distinctObserver = new DistinctObserver(observer, ec);
+			return hot.Merge(cold.Finally(DelayColdCompleted)).Subscribe(distinctObserver);
+			void DelayColdCompleted() => _ = distinctObserver.OnColdCompleted(hotLatencyDelay);
 		}
 	
 		private sealed class DistinctObserver(IObserver<T> o, IEqualityComparer<T> ec) : IObserver<T>
@@ -52,17 +53,8 @@ public static class WarmObservable
 
 			public void OnNext(T value)
 			{
-				if (set is not null && Interlocked.CompareExchange(ref set, null, null) is {} x)
-				{
-					if (x.Add(value))
-					{
-						o.OnNext(value);
-					}
-				}
-				else
-				{
+				if (set is null || Interlocked.CompareExchange(ref set, null, null) is not { } x || x.Add(value))
 					o.OnNext(value);
-				}
 			}
 		}
 	}
