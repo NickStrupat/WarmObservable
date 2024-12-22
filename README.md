@@ -24,7 +24,7 @@ You have a database that you can:
 
 WarmObservable allows you to combine these two sources of data into a single observable. The cold observable is used to populate the initial state of the observable, and the hot observable is used to update the observable with new data.
 
-### Subtle but compelling feature:
+### Subtle but compelling feature
 WarmObservable instances account for the race condition between the cold and hot observables.
 
 Let's say your cold observable emits existing `Thing` rows A, B, and C. Then your hot observable emits the new `Thing` row D. If you were to simply use `cold.Merge(hot)`, any `Thing` rows inserted between the time the cold observable emits and the hot observable emits would be lost. Conversely, if you were to use `hot.Merge(cold)`, any `Thing` rows inserted between the time the hot observable emits and the cold observable emits would be duplicated.
