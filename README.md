@@ -1,6 +1,22 @@
 # WarmObservable
 A library for combining a cold observable and a hot observable of the same source.
 
+[![NuGet Version](https://img.shields.io/nuget/v/WarmObservable)](https://www.nuget.org/packages/WarmObservable)
+
+## Usage
+```csharp
+var cold = Observable.FromAsync(async () => await apiClient.GetThingsAsync()).SelectMany(x => x);
+
+var hot = new Subject<Thing>();
+await apiClient.SubscribeToNewThingsAsync(hot.OnNext);
+
+var thingEqualityComparer = EqualityComparer<Thing>.Create(
+    (a, b) => a!.Id == b!.Id,
+    x => x.Id.GetHashCode()
+);
+var warm = WarmObservable.From(cold, hot, thingEqualityComparer);
+```
+
 ### Main use case
 You have a database that you can:
 - query for `Thing` rows where `Thing.Color` is red
@@ -18,19 +34,3 @@ WarmObservables account for this by merging the hot and cold observables, but on
 To address that issue, WarmObservable also keeps a `HashSet` internally. However, once the cold observable has completed the `HashSet` is bypassed and released. At that point, WarmObservable no longer checks for duplicates and the GC can collect the HashSet.
 
 You can also provide a latency delay to account for the time it takes for the hot observable to actually begin emitting events.
-
-## Usage
-```csharp
-var cold = Observable.FromAsync(async () => await apiClient.GetThingsAsync()).SelectMany(x => x);
-
-var hot = new Subject<Thing>();
-await apiClient.SubscribeToNewThingsAsync(hot.OnNext);
-
-var thingEqualityComparer = EqualityComparer<Thing>.Create(
-    (a, b) => a!.Id == b!.Id,
-    x => x.Id.GetHashCode()
-);
-var warm = WarmObservable.From(cold, hot, thingEqualityComparer);
-```
-
-[![NuGet Version](https://img.shields.io/nuget/v/WarmObservable)](https://www.nuget.org/packages/WarmObservable)
