@@ -15,7 +15,7 @@ Let's say your cold observable emits existing `Thing` rows A, B, and C. Then you
 
 WarmObservables account for this by merging the hot and cold observables, but only emitting distinct `Thing` rows. You may be thinking that behavior could easily be implemented with `hot.Merge(cold).Distinct()`. You would be right! However, `Distinct()` works by keeping a `HashSet` of all the items it has seen so far. The `HashSet` contains all the `Thing` rows ever emitted by the observable (minus duplicates) and never releases them. Over time that will result in a large amount of memory being used.
 
-To address that issue, WarmObservable also keeps a `HashSet` internally. However, once the cold observable has completed the `HashSet` is bypassed and released. At that point, WarmObservable no longer checks for duplicates and the GC may collect the HashSet used previous for distinct checking.
+To address that issue, WarmObservable also keeps a `HashSet` internally. However, once the cold observable has completed the `HashSet` is bypassed and released. At that point, WarmObservable no longer checks for duplicates and the GC can collect the HashSet.
 
 You can also provide a latency delay to account for the time it takes for the hot observable to actually begin emitting events.
 
